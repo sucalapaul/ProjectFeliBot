@@ -42,28 +42,23 @@ Portc = 0
 
 Do
 
-Portd.7 = 1
+
 Portc.1 = 1
 Waitus 10
 Portc.1 = 0
 
-   Do
-
-   Loop Until Pinc.1 = 0
-Portd.7 = 0
 Waitus 20
 
+A = Pinc.1
 
-'A = Pinc.0
-
-'Portd.7 = A
-'Wait 1
-'Portd.7 = 0
-'Wait 1
-
-
+If A = 1 Then
+   Portd.7 = 1
+Else
+   Portd.7 = 0
+End If
 
 Loop
+
 
 'Config Com1 = Dummy , Synchrone = 0 , Parity = Even , Stopbits = 2 , Databits = 8
 ' when you unremark the line above make sure to change the terminal emulator settings
