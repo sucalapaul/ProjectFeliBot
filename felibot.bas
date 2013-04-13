@@ -30,16 +30,25 @@ Mcusr = &H80
 Dim A As Bit
 Dim Adc0 As Word , Adc1 As Word , Adc2 As Word , Adc3 As Word , Adc4 As Word , Adc5 As Word , Adc6 As Word , Adc7 As Word
 Dim Sharp(6) As Word
+Dim Linie(4) As Byte
 
-Dim I As Byte , Ii As Byte
+Dim I As Byte , Ii As Byte , Aux_word As Word
+
+Dim Viteza As Integer , Directie As Integer
 
 'CONFIG PINI
 
 Config Porta = Input
 
-Config Pind.7 = Output
 Config Portc.0 = Input
 Config Portc.1 = Input
+Config Portc.2 = Input
+Config Portc.3 = Input
+
+Config Pind.4 = Output
+Config Pind.5 = Output
+Config Pind.6 = Output
+Config Pind.7 = Output
 
 'ALTE CONFIG
 
@@ -53,6 +62,11 @@ Start Adc
 
 Porta = 0
 Portc = 0
+Portd = 0
+
+Pwm1a = 0
+Pwm1b = 0
+
 
 Do
 
@@ -63,13 +77,63 @@ Printbin 27;
 Print "[;H";
 
 
-For I = 1 To 1
-   Ii = I - 1
-   Sharp(i) = Getadc(ii)
-   Print "sharp " ; I ; ": " ; Sharp(i)
-Next
+'citesc sharpurile
+   For I = 1 To 6
+      Ii = I - 1
+      Aux_word = Getadc(ii)
+      Aux_word = Aux_word + Sharp(i)
+      Sharp(i) = Aux_word / 2
+      Print "sharp " ; I ; ": " ; Sharp(i)
+   Next
 
-'Print "Salut"
+'citire senzor linie
+   Portc.0 = 1
+   Portc.1 = 1
+   Portc.2 = 1
+   Portc.3 = 1
+   Waitus 10
+   Portc.0 = 0
+   Portc.1 = 0
+   Portc.2 = 0
+   Portc.3 = 0
+
+   'sensibilitatea la senzorii de linie
+   Waitus 20
+
+   linie(1) = Pinc.0
+   Linie(2) = Pinc.1
+   Linie(3) = Pinc.2
+   Linie(4) = Pinc.3
+
+'motoare
+
+'Portd.5 = 0
+Portd.4 = 1
+
+'fara
+Portd.7 = 0
+'1
+Portd.6 = 1
+'Wait 1
+ 'spate
+'Portd.6 = 0
+'1
+'Portd.7 = 1
+'Wait 1
+
+
+'Portd.4 = 0
+
+Portd.5 = 1
+
+'Portd.2 = 0
+'Portd.3 = 1
+'Wait 1
+Portd.2 = 1
+Portd.3 = 0
+'Wait 1
+
+
 
 
 Waitms 200
@@ -80,19 +144,7 @@ Loop
 Do
 
 
-Portc.1 = 1
-Waitus 10
-Portc.1 = 0
 
-Waitus 20
-
-A = Pinc.1
-
-If A = 1 Then
-   Portd.7 = 1
-Else
-   Portd.7 = 0
-End If
 
 Loop
 
