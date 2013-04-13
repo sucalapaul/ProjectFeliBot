@@ -1,11 +1,3 @@
-'-----------------------------------------------------------------------------------------
-'name                     : m32.bas
-'copyright                : (c) 1995-2005, MCS Electronics
-'purpose                  : test file for Mega32
-'micro                    : Mega32
-'suited for demo          : yes
-'commercial addon needed  : no
-'-----------------------------------------------------------------------------------------
 
 $regfile = "m32def.dat"                                     ' specify the used micro
 $crystal = 16000000                                         ' used crystal frequency
@@ -28,14 +20,46 @@ Mcusr = &H80
 Mcusr = &H80
 
 
+
+'------------------------------
+'DE ACI II CEVA UTIL
+'----------------------
+
+'VARIABILE
+
+Dim A As Bit
+
+
+'CONFIG PINI
+
 Config Pind.7 = Output
+Config Portc.0 = Input
+Config Portc.1 = Input
+
+
+Portc = 0
+
 
 Do
 
 Portd.7 = 1
-Wait 1
+Portc.1 = 1
+Waitus 10
+Portc.1 = 0
+
+   Do
+
+   Loop Until Pinc.1 = 0
 Portd.7 = 0
-Wait 1
+Waitus 20
+
+
+'A = Pinc.0
+
+'Portd.7 = A
+'Wait 1
+'Portd.7 = 0
+'Wait 1
 
 
 

@@ -1,6 +1,6 @@
 Report       : FELIBOT
 Date         : 04-13-2013
-Time         : 03:54:15
+Time         : 04:32:00
 
 Compiler     : BASCOM-AVR LIBRARY V 1.11.9.0
 Processor    : M32
@@ -8,9 +8,9 @@ SRAM         : 800 hex
 EEPROM       : 400 hex
 ROMSIZE      : 8000 hex
 
-ROMIMAGE     : 134 hex  -> Will fit into ROM
-ROMIMAGE     :  308 dec
-FLASH USED   :  0  %
+ROMIMAGE     : 15C hex  -> Will fit into ROM
+ROMIMAGE     :  348 dec
+FLASH USED   :  1  %
 BAUD         : 19200 Baud
 XTAL         : 16000000 Hz
 BAUD error   : 0.16%
@@ -21,7 +21,7 @@ S-Stacksize  : A hex
 S-Stackstart : 840 hex
 Framesize    : 28 hex
 Framestart   : 817 hex
-Space left   :  1967  dec
+Space left   :  1966  dec
 
 LCD DB7      : PORTB.7
 LCD DB6      : PORTB.6
@@ -55,6 +55,7 @@ PWM1B                            Word              0048          72
 COMPARE1B                        Word              0048          72 
 PWM0                             Byte              005C          92 
 ERR                              Bit               0006          6 
+A                                Bit               0060          96 
 
 --------------------------------------------------------------------------------
 Constant                         Value
@@ -426,4 +427,5 @@ COMPARE2                         not used
 ADCD                             not used
 COMPARE1                         not used
 PWM0                             not used
+A                                not used
 
