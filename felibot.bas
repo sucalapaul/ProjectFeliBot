@@ -8,7 +8,7 @@
 '-----------------------------------------------------------------------------------------
 
 $regfile = "m32def.dat"                                     ' specify the used micro
-$crystal = 4000000                                          ' used crystal frequency
+$crystal = 16000000                                         ' used crystal frequency
 $baud = 19200                                               ' use baud rate
 $hwstack = 32                                               ' default use 32 for the hardware stack
 $swstack = 10                                               ' default use 10 for the SW stack
@@ -27,17 +27,19 @@ $framesize = 40                                             ' default use 40 for
 Mcusr = &H80
 Mcusr = &H80
 
-'Or program the fuse bit
-$crystal = 4000000
-$baud = 19200
-Print "test M32"
+
+Config Pind.7 = Output
+
+Do
+
+Portd.7 = 1
+Wait 1
+Portd.7 = 0
+Wait 1
 
 
-On Int0 Test0
-Enable Int0
-On Capture1 Test
-Enable Capture1
-Enable Interrupts
+
+Loop
 
 'Config Com1 = Dummy , Synchrone = 0 , Parity = Even , Stopbits = 2 , Databits = 8
 ' when you unremark the line above make sure to change the terminal emulator settings
