@@ -1,6 +1,6 @@
 Report       : FELIBOT
 Date         : 04-13-2013
-Time         : 04:35:24
+Time         : 14:26:22
 
 Compiler     : BASCOM-AVR LIBRARY V 1.11.9.0
 Processor    : M32
@@ -8,10 +8,10 @@ SRAM         : 800 hex
 EEPROM       : 400 hex
 ROMSIZE      : 8000 hex
 
-ROMIMAGE     : 172 hex  -> Will fit into ROM
-ROMIMAGE     :  370 dec
-FLASH USED   :  1  %
-BAUD         : 19200 Baud
+ROMIMAGE     : 34A hex  -> Will fit into ROM
+ROMIMAGE     :  842 dec
+FLASH USED   :  2  %
+BAUD         : 9600 Baud
 XTAL         : 16000000 Hz
 BAUD error   : 0.16%
 
@@ -21,7 +21,7 @@ S-Stacksize  : A hex
 S-Stackstart : 840 hex
 Framesize    : 28 hex
 Framestart   : 817 hex
-Space left   :  1966  dec
+Space left   :  1936  dec
 
 LCD DB7      : PORTB.7
 LCD DB6      : PORTB.6
@@ -56,6 +56,17 @@ COMPARE1B                        Word              0048          72
 PWM0                             Byte              005C          92 
 ERR                              Bit               0006          6 
 A                                Bit               0060          96 
+ADC0                             Word              0061          97 
+ADC1                             Word              0063          99 
+ADC2                             Word              0065          101 
+ADC3                             Word              0067          103 
+ADC4                             Word              0069          105 
+ADC5                             Word              006B          107 
+ADC6                             Word              006D          109 
+ADC7                             Word              006F          111 
+SHARP                            Word (6)          0071          113 
+I                                Byte              007D          125 
+II                               Byte              007E          126 
 
 --------------------------------------------------------------------------------
 Constant                         Value
@@ -414,7 +425,7 @@ _ROMSIZE                         32768
 _DOSFILEWRITE                    0                                                                                                                                                                                                                                                               
 _DOSDIRWRITE                     0                                                                                                                                                                                                                                                               
 _1WEXT                           0                                                                                                                                                                                                                                                               
-_ADC_REFMODEL                    0                                                                                                                                                                                                                                                               
+_ADC_REFMODEL                    1                                                                                                                                                                                                                                                               
 
 
 --------------------------------------------------------------------------------
@@ -427,4 +438,12 @@ COMPARE2                         not used
 ADCD                             not used
 COMPARE1                         not used
 PWM0                             not used
+ADC0                             not used
+ADC1                             not used
+ADC2                             not used
+ADC3                             not used
+ADC4                             not used
+ADC5                             not used
+ADC6                             not used
+ADC7                             not used
 

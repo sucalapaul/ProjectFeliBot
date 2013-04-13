@@ -1,7 +1,7 @@
 
 $regfile = "m32def.dat"                                     ' specify the used micro
 $crystal = 16000000                                         ' used crystal frequency
-$baud = 19200                                               ' use baud rate
+$baud = 9600                                                ' use baud rate
 $hwstack = 32                                               ' default use 32 for the hardware stack
 $swstack = 10                                               ' default use 10 for the SW stack
 $framesize = 40                                             ' default use 40 for the frame space
@@ -28,16 +28,53 @@ Mcusr = &H80
 'VARIABILE
 
 Dim A As Bit
+Dim Adc0 As Word , Adc1 As Word , Adc2 As Word , Adc3 As Word , Adc4 As Word , Adc5 As Word , Adc6 As Word , Adc7 As Word
+Dim Sharp(6) As Word
 
+Dim I As Byte , Ii As Byte
 
 'CONFIG PINI
+
+Config Porta = Input
 
 Config Pind.7 = Output
 Config Portc.0 = Input
 Config Portc.1 = Input
 
+'ALTE CONFIG
 
+Config Adc = Single , Prescaler = Auto
+Start Adc
+
+
+
+'COD
+
+
+Porta = 0
 Portc = 0
+
+Do
+
+'clear screen
+Printbin 27;
+Print "[2J";
+Printbin 27;
+Print "[;H";
+
+
+For I = 1 To 1
+   Ii = I - 1
+   Sharp(i) = Getadc(ii)
+   Print "sharp " ; I ; ": " ; Sharp(i)
+Next
+
+'Print "Salut"
+
+
+Waitms 200
+
+Loop
 
 
 Do
