@@ -1,4 +1,3 @@
-
 $regfile = "m32def.dat"                                     ' specify the used micro
 $crystal = 16000000                                         ' used crystal frequency
 $baud = 9600                                                ' use baud rate
@@ -31,9 +30,10 @@ Mcusr = &H80
    Dim Sharp(6) As Word
    Dim Linie(4) As Byte
 
-   Dim I As Byte , Ii As Byte , Aux_word As Word
+   Dim I As Byte , Ii As Byte , Aux_word As Word , Aux_integer As Integer
 
-   Dim Speed As Integer , Direction As Integer
+   Dim Speed As Integer , Direction As Integer , Max_speed As Integer
+   Dim Serin_chr As Byte
 
 
 'CONFIG PINS
@@ -54,6 +54,7 @@ Mcusr = &H80
    Config Adc = Single , Prescaler = Auto
    Start Adc
 
+   Config Timer1 = Pwm , Pwm = 8 , Compare A Pwm = Clear Down , Compare B Pwm = Clear Down , Prescale = 64
 
 'ALIAS
    Left_forward Alias Portd.2
@@ -61,6 +62,8 @@ Mcusr = &H80
 
    Right_forward Alias Portd.6
    Right_backward Alias Portd.7
+
+   On Urxc Urxc_in
 
 
 'CODE
@@ -72,9 +75,16 @@ Mcusr = &H80
 
    Pwm1a = 0
    Pwm1b = 0
-
    Speed = 0
    Direction = 0
+   Max_speed = 255
+
+
+
+
+   Enable Urxc
+   Enable Interrupts
+
 
 
 Do
@@ -96,10 +106,11 @@ Do
       Aux_word = Getadc(ii)
       Aux_word = Aux_word + Sharp(i)
       Sharp(i) = Aux_word / 2
-      Print "sharp " ; I ; ": " ; Sharp(i)
+      'Print "sharp " ; I ; ": " ; Sharp(i)
    Next
 
 'read line sensors
+   Disable Interrupts
    Portc.0 = 1
    Portc.1 = 1
    Portc.2 = 1
@@ -117,10 +128,11 @@ Do
    Linie(2) = Pinc.1
    Linie(3) = Pinc.2
    Linie(4) = Pinc.3
+   enable interrupts
 
 'motors
    'full stop = BRAKE
-   If Speed == 0 And Direction == 0 Then
+   If Speed = 0 And Direction = 0 Then
       Pwm1a = 0
       Pwm1b = 0
 
@@ -128,51 +140,82 @@ Do
       Right_forward = 1
       Right_backward = 1
       Left_forward = 1
-      Right_backward = 1
+      Left_backward = 1
+
+   Else
+
+     'Curba larga
+     If Direction > -128 And Direction < 128 Then
+     'A or B
+        If Speed > 0 Then
+           'A
+           Right_forward = 1
+           Right_backward = 0
+           Left_forward = 1
+           Left_backward = 0
+        Else
+           'B
+           Right_forward = 0
+           Right_backward = 1
+           Left_forward = 0
+           Left_backward = 1
+        End If
+     End If
+
+     'rotit pe loc spre stanga
+     If Direction < -127 Then
+        'C or D, left side
+        If Speed > 0 Then
+           'C
+           Right_forward = 1
+           Right_backward = 0
+           Left_forward = 0
+           Left_backward = 1
+        Else
+           'D
+           Right_forward = 0
+           Right_backward = 1
+           Left_forward = 1
+           Left_backward = 0
+        End If
+     End If
+
+     'rotit pe loc spre dreapta
+     If Direction > 127 Then
+        'C or D, right side
+        If Speed < 0 Then
+           'C
+           Right_forward = 1
+           Right_backward = 0
+           Left_forward = 0
+           Left_backward = 1
+        Else
+           'D
+           Right_forward = 0
+           Right_backward = 1
+           Left_forward = 1
+           Left_backward = 0
+        End If
+     End If
+
+     Aux_integer = Abs(direction)
+     Aux_integer = 128 - Aux_integer
+     Aux_integer = Abs(aux_integer)
+     Aux_integer = Aux_integer * Speed
+     Aux_integer = Aux_integer / 128
+     Aux_integer = Abs(aux_integer)
+
+     If Direction > 0 Then
+         Pwm1b = Aux_integer
+        Aux_integer = Abs(speed)
+        Pwm1a =Aux_integer
+     Else
+         Pwm1a = Aux_integer
+        Aux_integer = Abs(speed)
+         Pwm1b = Aux_integer
+     End If
+
    End If
-
-   If Speed > 0 Then
-      If Direction > 0 Then
-         Right_forward = 1
-
-      Else
-
-      End
-   End If
-
-   If Speed < 0 Then
-   End If
-
-
-
-
-'Portd.5 = 0
-Portd.4 = 1
-
-'fara
-Portd.7 = 0
-'1
-Portd.6 = 1
-'Wait 1
- 'spate
-'Portd.6 = 0
-'1
-'Portd.7 = 1
-'Wait 1
-
-
-'Portd.4 = 0
-
-Portd.5 = 1
-
-'Portd.2 = 0
-'Portd.3 = 1
-'Wait 1
-Portd.2 = 1
-Portd.3 = 0
-'Wait 1
-
-
 
 
 Waitms 200
@@ -199,5 +242,54 @@ End
 Test0:
 Test:
 nop
+
+Urxc_in:
+   Inputbin Serin_chr
+   If Serin_chr = "w" Then
+      Speed = Max_speed
+      Direction = 0
+   End If
+
+   If Serin_chr = "a" Then
+      Speed = Max_speed
+      Direction = -255
+   End If
+
+   If Serin_chr = "d" Then
+      Speed = Max_speed
+      Direction = 255
+   End If
+
+   If Serin_chr = "s" Or Serin_chr = " " Then
+      Speed = 0
+      Direction = 0
+   End If
+
+   If Serin_chr = "q" Then
+      Speed = Max_speed
+      Direction = -127
+   End If
+
+   If Serin_chr = "e" Then
+      Speed = Max_speed
+      Direction = 127
+   End If
+
+   If Serin_chr = "z" Then
+      Speed = -max_speed
+      Direction = -127
+   End If
+
+   If Serin_chr = "x" Then
+      Speed = -50
+      Direction = 0
+   End If
+
+   If Serin_chr = "c" Then
+      Speed = -max_speed
+      Direction = 127
+   End If
+
+Return
 
 Return
