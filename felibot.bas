@@ -29,15 +29,21 @@ Mcusr = &H80
    Dim Adc0 As Word , Adc1 As Word , Adc2 As Word , Adc3 As Word , Adc4 As Word , Adc5 As Word , Adc6 As Word , Adc7 As Word
    Dim Sharp(6) As Word
    Dim Linie(4) As Byte
+   Dim Unghi_sharp(6) As Integer
 
    Dim I As Byte , Ii As Byte , Aux_word As Word , Aux_integer As Integer
 
    Dim Speed As Integer , Direction As Integer , Max_speed As Integer
    Dim Serin_chr As Byte
+   Dim Sj As Byte
+   Dim Found As Byte
+   Dim Sharp_count As Byte
 
 
 'CONFIG PINS
    Config Porta = Input
+
+   Config Portb.3 = Output
 
    Config Portc.0 = Input
    Config Portc.1 = Input
@@ -55,6 +61,10 @@ Mcusr = &H80
    Start Adc
 
    Config Timer1 = Pwm , Pwm = 8 , Compare A Pwm = Clear Down , Compare B Pwm = Clear Down , Prescale = 64
+   Config Timer0 = Timer , Compare A = Toggle , Clear Timer = 1 , Prescale = 1024
+   'Tccr0 = 8d
+
+   Start Timer0
 
 'ALIAS
    Left_forward Alias Portd.2
@@ -65,6 +75,13 @@ Mcusr = &H80
 
    On Urxc Urxc_in
 
+
+   Unghi_sharp(1) = -15
+   Unghi_sharp(2) = 15
+   Unghi_sharp(3) = 255
+   Unghi_sharp(4) = -255
+   Unghi_sharp(5) = -120
+   Unghi_sharp(6) = -15
 
 'CODE
 
@@ -77,7 +94,11 @@ Mcusr = &H80
    Pwm1b = 0
    Speed = 0
    Direction = 0
-   Max_speed = 255
+   Max_speed = 50
+   Found = 0
+   Sj = 1
+   Sharp_count = 2
+
 
 
 
@@ -85,6 +106,20 @@ Mcusr = &H80
    Enable Urxc
    Enable Interrupts
 
+
+   Tccr0 = &H1A
+   Compare0 = 27                                            '27
+   '67
+
+'Do
+'
+'   Tccr0 = 0
+'   Waitms 100
+'   Tccr0 = &H1A
+'   Waitms 100
+
+
+'Loop
 
 
 Do
@@ -101,12 +136,12 @@ Do
 
 
 'read sharp sensors
-   For I = 1 To 6
+   For I = 1 To Sharp_count
       Ii = I - 1
       Aux_word = Getadc(ii)
       Aux_word = Aux_word + Sharp(i)
       Sharp(i) = Aux_word / 2
-      'Print "sharp " ; I ; ": " ; Sharp(i)
+      ';Print "sharp " ; I ; ": " ; Sharp(i)
    Next
 
 'read line sensors
@@ -128,7 +163,75 @@ Do
    Linie(2) = Pinc.1
    Linie(3) = Pinc.2
    Linie(4) = Pinc.3
-   enable interrupts
+   Enable Interrupts
+
+
+
+
+   '(
+      Found = 0
+      If Sharp(1) > 150 Then
+         Direction = Unghi_sharp(1)
+         Found = 1
+      End If
+      If Sharp(2) > 150 Then
+         Direction = Unghi_sharp(2)
+         Found = 1
+      End If
+      If Sharp(1) > 150 And Sharp(2) > 150 Then
+         Direction = 0
+         Found = 1
+      End If
+
+      If Found = 1 Then
+         Speed = Max_speed
+      Else
+         Speed = 10
+         Direction = 0
+      End If
+
+      If Sj = 1 Then
+         Speed = 0
+         Direction = 0
+      End If
+
+   End If
+
+
+')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 'motors
    'full stop = BRAKE
@@ -208,7 +311,7 @@ Do
      If Direction > 0 Then
          Pwm1b = Aux_integer
         Aux_integer = Abs(speed)
-        Pwm1a =Aux_integer
+        Pwm1a = Aux_integer
      Else
          Pwm1a = Aux_integer
         Aux_integer = Abs(speed)
@@ -218,7 +321,7 @@ Do
    End If
 
 
-Waitms 200
+';Waitms 200
 
 Loop
 
@@ -283,6 +386,14 @@ Urxc_in:
    If Serin_chr = "x" Then
       Speed = -50
       Direction = 0
+   End If
+
+   If Serin_chr = "j" Then
+      Sj = 1
+   End If
+
+   If Serin_chr = "J" Then
+      Sj = 0
    End If
 
    If Serin_chr = "c" Then

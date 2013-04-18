@@ -1,6 +1,6 @@
 Report       : FELIBOT
-Date         : 04-14-2013
-Time         : 23:05:36
+Date         : 04-18-2013
+Time         : 04:32:51
 
 Compiler     : BASCOM-AVR LIBRARY V 1.11.9.0
 Processor    : M32
@@ -8,8 +8,8 @@ SRAM         : 800 hex
 EEPROM       : 400 hex
 ROMSIZE      : 8000 hex
 
-ROMIMAGE     : 826 hex  -> Will fit into ROM
-ROMIMAGE     :  2086 dec
+ROMIMAGE     : 8BC hex  -> Will fit into ROM
+ROMIMAGE     :  2236 dec
 FLASH USED   :  6  %
 BAUD         : 9600 Baud
 XTAL         : 16000000 Hz
@@ -21,7 +21,7 @@ S-Stacksize  : A hex
 S-Stackstart : 840 hex
 Framesize    : 28 hex
 Framestart   : 817 hex
-Space left   :  1921  dec
+Space left   :  1906  dec
 
 LCD DB7      : PORTB.7
 LCD DB6      : PORTB.6
@@ -66,14 +66,18 @@ ADC6                             Word              006D          109
 ADC7                             Word              006F          111 
 SHARP                            Word (6)          0071          113 
 LINIE                            Byte (4)          007D          125 
-I                                Byte              0081          129 
-II                               Byte              0082          130 
-AUX_WORD                         Word              0083          131 
-AUX_INTEGER                      Integer           0085          133 
-SPEED                            Integer           0087          135 
-DIRECTION                        Integer           0089          137 
-MAX_SPEED                        Integer           008B          139 
-SERIN_CHR                        Byte              008D          141 
+UNGHI_SHARP                      Integer (6)       0081          129 
+I                                Byte              008D          141 
+II                               Byte              008E          142 
+AUX_WORD                         Word              008F          143 
+AUX_INTEGER                      Integer           0091          145 
+SPEED                            Integer           0093          147 
+DIRECTION                        Integer           0095          149 
+MAX_SPEED                        Integer           0097          151 
+SERIN_CHR                        Byte              0099          153 
+SJ                               Byte              009A          154 
+FOUND                            Byte              009B          155 
+SHARP_COUNT                      Byte              009C          156 
 
 --------------------------------------------------------------------------------
 Constant                         Value
@@ -438,7 +442,6 @@ _ADC_REFMODEL                    1
 --------------------------------------------------------------------------------
 Warnings:
 --------------------------------------------------------------------------------
-COMPARE0                         not used
 PWM                              not used
 COUNTER2                         not used
 COMPARE2                         not used
